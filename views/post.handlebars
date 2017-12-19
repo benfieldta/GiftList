@@ -1,0 +1,190 @@
+<nav class="navbar navbar-default top-bar">
+
+	<div class="container-fluid">
+
+
+		<ul class="nav navbar-nav navbar-left nav-large-font">
+			<li>
+				<a href="signup">
+					<button class="btn btn-info btn-round">Sign up</button>
+				</a>
+			</li>
+			<li>
+				<a href="#">
+					<button class="btn btn-info btn-round" data-toggle="modal" data-target="#myModal">Log in</button>
+				</a>
+			</li>
+		</ul>
+		<ul class="nav navbar-nav navbar-center nav-large-font">
+			<li>
+				<a href="/" id="navHomeLink">GiftList</a>
+			</li>
+		</ul>
+		<ul class="nav navbar-nav navbar-right nav-large-font">
+			<li>
+				<a href="post">
+					<button class="btn btn-give btn-info">Give!</button>
+				</a>
+			</li>
+		</ul>
+
+	</div>
+</div>
+
+	<!-- /.container-fluid -->
+
+</nav>
+<div class="container" id="main">
+
+	<a href="index" style="text-decoration: none;" id="post-title">
+		<h1 id="title" class="text-center">GiftList</h1>
+	</a>
+
+	<form id="post-form">
+		<div class="form-group">
+			<label for="itemName">Title</label>
+			<input type="text" class="form-control" id="itemTitle" placeholder="Item Name">
+			<small id="emailHelp" class="form-text text-muted">Make sure your title is descriptive of the item.</small>
+		</div>
+		<div class="form-group">
+			<label for="itemLocation">Location</label>
+			<input type="text" class="form-control" id="location" placeholder="Location">
+		</div>
+		<div class="form-group">
+			<label for="itemCategory">Category</label>
+			<select class="form-control" id="category">
+				<option>Furniture</option>
+				<option>Electronics</option>
+				<option>Houseware</option>
+				<option>Hobby/recreational</option>
+				<option>Misc.</option>
+			</select>
+		</div>
+		<div class="form-group">
+			<label for="itemLocation">Contact</label>
+			<input type="text" class="form-control" id="contact" placeholder="Contact info">
+		</div>
+		<div class="form-group">
+			<label for="itemDescription">Description</label>
+			<textarea class="form-control" id="description" rows="3" maxlength="250"></textarea>
+		</div>
+		<div class="form-group">
+			<label for="uploadImage">File input</label>
+			<input type="file" class="form-control-file" id="upload">
+			<small id="fileHelp" class="form-text text-muted">Please upload a clear picture of the item you are giving.</small>
+		</div>
+		<button type="submit" class="btn btn-primary btn-post center-block" id="submit">Submit</button>
+	</form>
+
+<div class="modal fade" id="myModal" role="dialog">
+	<div class="login-card">
+		<h1>Log in</h1>
+		<br>
+		<form>
+			<input type="text" name="user" placeholder="Username">
+			<input type="password" name="pass" placeholder="Password">
+			<input type="submit" name="login" class="login login-submit" value="Log in">
+		</form>
+
+		<div class="login-help">
+			<a href="singup">Register</a> •
+			<a href="#">Forgot Password</a>
+		</div>
+	</div>
+</div>
+
+<footer class="navbar navbar-default container-fluid" id="postFooter">
+
+	<div class="container-fluid">
+
+		<ul class="nav navbar-nav">
+			<li>
+				<a href="#">Advertising</a>
+			</li>
+			<li>
+				<a href="#">Business</a>
+			</li>
+			<li>
+				<a href="#">About</a>
+			</li>
+		</ul>
+
+		<ul class="nav navbar-nav navbar-right">
+			<li>
+				<a href="#">Privacy</a>
+			</li>
+			<li>
+				<a href="#">Terms</a>
+			</li>
+			<li>
+				<a href="#">Settings</a>
+			</li>
+			<li>
+				<a href="#">Use Google.co.th</a>
+			</li>
+		</ul>
+
+	</div>
+	<!-- /.container-fluid -->
+
+</footer>
+
+<script type="text/javascript">
+
+	$("#submit").on("click", function (event) {
+		event.preventDefault();
+
+		var fd = new FormData();
+
+		fd.append('itemTitle', $("#itemTitle").val().trim());
+		fd.append('location', $("#location").val().trim());
+		fd.append('category', $("#category").val().trim());
+		fd.append('contact', $("#contact").val().trim());
+		fd.append('description', $("#description").val().trim());
+		fd.append('upload', $("#upload")[0].files[0]);
+
+
+		var newGift = {
+			itemTitle: $("#itemTitle").val().trim(),
+			location: $("#location").val().trim(),
+			category: $("#category").val().trim(),
+			contact: $("#contact").val().trim(),
+			description: $("#description").val().trim(),
+			upload: $("#upload")[0].files[0].name
+		};
+
+		console.log(newGift);
+
+		/*
+		$.ajax({
+			method: "POST",
+			url: "/upload",
+			dataType: "file",
+			data: newGift.upload
+		}).done(function (result) {
+			console.log("response: " + result);
+
+		});
+		*/
+
+		$.ajax({
+			method: "POST",
+			url: "/gift",
+			processData: false,
+			contentType: false,
+			dataType: "json",
+			data: fd
+		}).done(function (result) {
+			//response of post result comes from res.json({result})
+			console.log("response", result);
+			var form = document.getElementById("post-form");
+			form.reset();
+
+			$("#main").prepend(`<div class="alert alert-success" role="alert">
+					Your item has been posted! You can find all other posting on GiftList <a href="/list" class="alert-link"><b>Here</b></a>.
+					</div>`)
+		});
+	});
+
+
+</script>
